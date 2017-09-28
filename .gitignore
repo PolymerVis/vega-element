@@ -34,7 +34,6 @@ node_modules
 
 # bower directory
 bower_components
-es5
 
 # gh_pages
 gh_pages
