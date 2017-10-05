@@ -22,12 +22,12 @@ vega-element
 
 ```
 
-`vega-element` is the Polymer element to provide an easy HTML interface for [vega](https://vega.github.io/vega) and [vega-lite](https://vega.github.io/vega-lite) visualizations.
-More API documentation and Demos can be found  [here](https://www.webcomponents.org/element/PolymerVis/vega-element)
+`vega-element` is the Polymer element to provide an easy HTML interface for [Vega](https://vega.github.io/vega) and [Vega-Lite](https://vega.github.io/vega-lite) visualizations.
+More API documentation and Demos can be found on [the web components page for vega-element](https://www.webcomponents.org/element/PolymerVis/vega-element).
 
 **Versions details**  
 v2 is a breaking change from v1 as it is an upgrade in major versions for both Polymer and Vega.  
-- [**v2**](https://github.com/PolymerVis/vega-element/tree/polymer2) Supports Polymer 2.0, Vega 3.0, and Vega-lite 2.0
+- [**v2**](https://github.com/PolymerVis/vega-element/tree/polymer2) Supports Polymer 2.0, Vega 3.0, and Vega-Lite 2.0
 - [**v1**](https://github.com/PolymerVis/vega-element/tree/polymer1) Supports Polymer 1.0 and Vega 2.0
 
 ## Installation
@@ -40,19 +40,19 @@ bower install --save vega-element
 
 [Vega](http://vega.github.io/) is a declarative format for creating, saving, and sharing visualization designs. With Vega, visualizations are described in JSON, and generate interactive views using either HTML5 Canvas or SVG.
 
-`vega-element` is the Polymer element to provide an easy HTML interface to render visualizations for any vega and vega-lite specifications.
+`vega-element` is the Polymer element to provide an easy HTML interface to render visualizations for any Vega and Vega-Lite specifications.
 
 `vega-signal` and `vega-data` provide data-binding to the `signals` and `data` in the vega runtime.
 
 `vega-data-stream` provide reactive updates to specific entry or entries in the specified data set in vega runtime.
 
-[vega-tooltip](https://github.com/vega/vega-tooltip) the plugin for vega/vegalite is also available in the form of flag `tooltip` and property `tooltip-options` in `vega-element`.
+[vega-tooltip](https://github.com/vega/vega-tooltip) the plugin for Vega/Vega-Lite is also available in the form of flag `tooltip` and property `tooltip-options` in `vega-element`.
 
 Optional components such as `vega-signal`, `vega-data`, and `vega-data-stream` need to be **imported separately**. However, `vega-elements.html` provides a quick list of all the available components.
 
 ### Important notes on *d3*, *vega*, *vega-lite*, *vega-tooltip* dependencies:
 
-`vega-element` depends on various dependencies such as [d3](https://d3js.org/), [vega](https://vega.github.io/vega/), [vega-lite](https://vega.github.io/vega-lite/), and [vega-tooltip](https://github.com/vega/vega-tooltip). However, not all of them are required for all use cases, as such, by default none of these libraries will be included in the `vega-element` import.
+`vega-element` depends on various dependencies such as [d3](https://d3js.org/), [Vega](https://vega.github.io/vega/), [Vega-Lite](https://vega.github.io/vega-lite/), and [Vega-Tooltip](https://github.com/vega/vega-tooltip). However, not all of them are required for all use cases, as such, by default none of these libraries will be included in the `vega-element` import.
 
 Individual libraries can be included normally with `<script>` or through `<link rel="import">` with the provided imports. Either vega or vega-core **MUST** be included for `vega-element` to work. Include vega-core only if d3 needs to be separated from vega (i.e. d3 is used in other parts of the app).
 
@@ -77,24 +77,24 @@ Including the required imports are more efficient than dynamically including the
 
 ## Usage
 
-**Basic vega usage**
+**Basic Vega usage**
 ```html
-<!-- load via URL to vega specification -->
+<!-- load via URL to Vega specification -->
 <vega-element vega-spec-url="vega-spec.json"></vega-element>
 
 <!-- load via vega specification JSON object -->
 <vega-element vega-spec="[[vegaSpecObject]]"></vega-element>
 ```
 
-**Basic vega-lite usage**  
+**Basic Vega-Lite usage**  
 ```html
-<!-- load via URL to vega-lite specification -->
+<!-- load via URL to Vega-Lite specification -->
 <vega-element vega-lite-spec-url="vega-lite-spec.json"></vega-element>
 
-<!-- load via vega-lite specification JSON object -->
+<!-- load via Vega-Lite specification JSON object -->
 <vega-element vega-lite-spec="[[vegaLiteSpecObject]]"></vega-element>
 ```
-vega-lite specification is automatically parsed into vega specification and is available as `vega-spec` property.
+vega-lite specification is automatically parsed into Vega specification and is available as `vega-spec` property.
 ```html
 <!-- vegaLiteSpecObject is parse into resultantVegaSpecObject -->
 <vega-element
