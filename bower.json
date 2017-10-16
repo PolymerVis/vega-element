@@ -1,6 +1,6 @@
 {
   "name": "vega-element",
-  "description": "Polymer 2.0 element for Vega 3 (http://vega.github.io).",
+  "description": "Polymer 2.0 element for Vega 3.0 (http://vega.github.io) and Vega-Lite 2.0.",
   "main": "vega-elements.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
@@ -17,6 +17,7 @@
     "iron-ajax": "PolymerElements/iron-ajax#^2.0.0"
   },
   "resolutions": {
-    "polymer": "^2.0.0"
+    "polymer": "^2.0.0",
+    "vega": "^3.0.5"
   }
 }

@@ -30,6 +30,9 @@ v2 is a breaking change from v1 as it is an upgrade in major versions for both P
 - [**v2**](https://github.com/PolymerVis/vega-element/tree/polymer2) Supports Polymer 2.0, Vega 3.0, and Vega-Lite 2.0
 - [**v1**](https://github.com/PolymerVis/vega-element/tree/polymer1) Supports Polymer 1.0 and Vega 2.0
 
+## Disclaimer
+PolymerVis is a personal project and is NOT in any way affliated with Vega, Vega-Lite, Polymer or Google.
+
 ## Installation
 
 ```
