@@ -5,7 +5,7 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
     "d3": "^4.0.0",
-    "vega": "^3.0.5",
+    "vega": "^3.0.0",
     "vega-lite": "^2.0.0",
     "polymer-vis": "^2.0.0",
     "vega-tooltip": "vega/vega-tooltip#^0.3.0"
@@ -17,7 +17,6 @@
     "iron-ajax": "PolymerElements/iron-ajax#^2.0.0"
   },
   "resolutions": {
-    "polymer": "^2.0.0",
-    "vega": "^3.0.5"
+    "polymer": "^2.0.0"
   }
 }
