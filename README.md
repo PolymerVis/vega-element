@@ -36,7 +36,7 @@ PolymerVis is a personal project and is NOT in any way affliated with Vega, Vega
 ## Installation
 
 ```
-bower install --save vega-element
+bower install --save PolymerVis/vega-element
 ```
 
 ## Component summary
@@ -220,3 +220,8 @@ function downloadImage(type) {
   return this.$.chart.downloadImage(type);
 }
 ```
+
+## Bl.ocks examples
+- [Simple barchart](https://bl.ocks.org/eterna2/65dacb480846bf08f645033b607b1e93)
+- [Data-binding with `vega-data`](http://bl.ocks.org/eterna2/d0d0c4593b8306926161571814859055)
+- [Data-binding with `vega-signal`](https://bl.ocks.org/eterna2/77329460e8e405b701699863ac2ce6e3)
