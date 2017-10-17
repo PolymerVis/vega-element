@@ -217,7 +217,6 @@ function downloadImage(type) {
 }
 ```
 
-
 @customElement
 @polymer
 @demo demo/index.html Basic demo
@@ -225,6 +224,7 @@ function downloadImage(type) {
 @demo demo/databind.html Data-binding demo
 
 -->
+
 <dom-module id="vega-element">
 
   <template>
@@ -242,6 +242,17 @@ class VegaElement extends Polymer.Element {
   static get is() {
     return 'vega-element';
   }
+  /**
+   * Fired when error when generate the Vega.View.
+   *
+   * @event error
+   */
+
+  /**
+    * Fired when `spec` is parsed, and the `view` is initialized.
+    *
+    * @event view-ready
+    */
   static get properties() {
     return {
       /**
@@ -663,7 +674,12 @@ class VegaElement extends Polymer.Element {
    */
   parse(vegaSpec, config) {
     if (!this._vegaReady || !vegaSpec) return;
-    return vega.parse(vegaSpec, config);
+    try {
+      return vega.parse(vegaSpec, config);
+    } catch (error) {
+      this.dispatchEvent(new CustomEvent('error', {detail: error}));
+      console.warn(error);
+    }
   }
 
   /**
@@ -683,8 +699,10 @@ class VegaElement extends Polymer.Element {
           let spec = window.vl.compile(this.vegaLiteSpec, logger).spec;
           this.vegaSpec = spec;
           resolve(spec);
-        } catch (err) {
-          reject(err);
+        } catch (error) {
+          this.dispatchEvent(new CustomEvent('error', {detail: error}));
+          console.warn(error);
+          reject(error);
         }
       });
     });
@@ -730,8 +748,8 @@ class VegaElement extends Polymer.Element {
       .then(s => {
         return JSON.parse(s);
       })
-      .catch(err => {
-        throw new Error(err);
+      .catch(error => {
+        this.dispatchEvent(new CustomEvent('error', {detail: error}));
       });
   }
 
@@ -751,13 +769,13 @@ class VegaElement extends Polymer.Element {
         link.setAttribute('download', 'vega-export.' + imageType);
         link.dispatchEvent(new MouseEvent('click'));
       })
-      .catch(function(error) {
-        /* error handling */
+      .catch(error => {
+        this.dispatchEvent(new CustomEvent('error', {detail: error}));
       });
   }
 
   _loadTooltipPlugin(view, tooltipOptions) {
-    if (!this.tooltip || !this._tooltipReady || !this.rendered) return;
+    if (!this.tooltip || !this._tooltipReady || !this.rendered || !view) return;
     window.vegaTooltip.vega(view, tooltipOptions);
   }
 
@@ -788,7 +806,9 @@ class VegaElement extends Polymer.Element {
       .then(o => {
         this.vegaLiteSpec = o;
       })
-      .catch(() => {});
+      .catch(error => {
+        this.dispatchEvent(new CustomEvent('error', {detail: error}));
+      });
   }
 
   _observeSlot() {
@@ -831,10 +851,15 @@ class VegaElement extends Polymer.Element {
   _computeView(runtime, headless) {
     if (!this._vegaReady || !runtime || !this._connected) return;
     var logLevel = vega[logLevel] || vega.None;
-    return new vega.View(runtime, {
+    var view = new vega.View(runtime, {
       logLevel,
       renderer: this.renderer
     }).initialize(headless ? null : this.$.vegaElement);
+
+    // dispatch ready
+    this.dispatchEvent(new CustomEvent('view-ready', {detail: view}));
+
+    return view;
   }
 
   /**

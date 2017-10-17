@@ -26,7 +26,8 @@
     "no-var": "off",
     "require-jsdoc": "off",
     "comma-dangle": ["error", "never"],
-    "arrow-parens": ["error", "as-needed"]
+    "arrow-parens": ["error", "as-needed"],
+    "no-console": ["error", {"allow": ["warn", "error"]}]
   },
   "globals": {
     "Polymer": true,
