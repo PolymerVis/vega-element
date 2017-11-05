@@ -701,10 +701,12 @@ class VegaElement extends Polymer.Element {
           resolve(spec);
         } catch (error) {
           this.dispatchEvent(new CustomEvent('error', {detail: error}));
-          console.warn(error);
           reject(error);
         }
       });
+    }).catch(error=>{
+      this.dispatchEvent(new CustomEvent('error', {detail: error}));
+      console.warn(error);
     });
   }
 
@@ -850,12 +852,14 @@ class VegaElement extends Polymer.Element {
    */
   _computeView(runtime, headless) {
     if (!this._vegaReady || !runtime || !this._connected) return;
+    if (this.view) this.view.finalize();
     var logLevel = vega[logLevel] || vega.None;
     var view = new vega.View(runtime, {
       logLevel,
       renderer: this.renderer
     }).initialize(headless ? null : this.$.vegaElement);
-
+    // reset render when new view is created
+    this.rendered = false;
     // dispatch ready
     this.dispatchEvent(new CustomEvent('view-ready', {detail: view}));
 
