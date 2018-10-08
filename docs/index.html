@@ -1,0 +1,128 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>vega-element demo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+    <script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2.0.0/webcomponents-loader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@2"></script>
+    <script src="../dist/vega-embed.bundled.min.js"></script>
+    <script>
+        hljs.initHighlightingOnLoad();
+        function decodeHTMLEntities(text) {
+            var entities = [
+                ['amp', '&'],
+                ['apos', '\''],
+                ['#x27', '\''],
+                ['#x2F', '/'],
+                ['#39', '\''],
+                ['#47', '/'],
+                ['lt', '<'],
+                ['gt', '>'],
+                ['nbsp', ' '],
+                ['quot', '"']
+            ];
+
+            for (var i = 0, max = entities.length; i < max; ++i)
+                text = text.replace(new RegExp('&' + entities[i][0] + ';', 'g'), entities[i][1]);
+
+            return text;
+        }
+        function renderMarked(id, title = "", text = "") {
+            const section = document.querySelector(id);
+            const code = decodeHTMLEntities(
+                section.innerHTML
+                    .replace(/ class=""/g, "")
+                    .replace(/=""/g, "")
+                    .replace(/"/g, "'")
+                    .trim());
+            const div = document.createElement('div');
+            div.innerHTML = marked(`### ${title}
+${text}
+\`\`\`html
+${code}
+\`\`\`
+            `);
+            section.insertAdjacentElement('afterBegin', div);
+        }
+    </script>
+</head>
+
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .container {
+        max-width: 640px;
+        display: flex;
+        flex-direction: column;
+
+    }
+
+    section section {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin: 5px;
+    }
+
+    section section div {
+        width: 100%;
+        overflow: auto;
+    }
+</style>
+
+<section class="container">
+    <section id="demo1">
+        <vega-embed show-compiled tooltip spec="./spec/scatterplot-vl.json"></vega-embed>
+    </section>
+    <script>renderMarked("#demo1", "Example 1", "Loading `Vega-Lite` spec from url. Show control to show compiled Vega spec.");</script>
+
+    <section id="demo2">
+        <vega-embed show-export tooltip spec="./spec/scatterplot-vg.json"></vega-embed>
+    </section>
+    <script>renderMarked("#demo2", "Example 2", "Loading `Vega` spec from url. Show controls to export SVG and PNG.");</script>
+
+    <section id="demo3">
+        <vega-embed actions tooltip mode="vega-lite" spec='{
+            "description": "A scatterplot showing horsepower and miles per gallons for various cars.",
+            "data": {"url": "data/cars.json"},
+            "mark": {"type": "point", "tooltip": {"content": "data"}},
+            "encoding": {
+              "x": {"field": "Horsepower", "type": "quantitative"},
+              "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+              "tooltip": [
+                {"field": "Horsepower", "type": "quantitative"},
+                {"field": "Miles_per_Gallon", "type": "quantitative"}
+              ]
+            }
+          }'></vega-embed>
+    </section>
+    <script>renderMarked("#demo3", "Example 3", "Loading `Vega-Lite` spec from a JSON string. `mode` must be provided if `$schema` is not declared in the spec.");</script>
+
+    <section id="demo4">
+        <vega-embed show-compiled spec="./spec/scatterplot-vl.json" source-footer='
+                <script>
+                    const style = document.createElement("link");
+                    style.href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css";
+                    style.rel = "stylesheet";
+                    document.head.appendChild(style);
+
+                    const script = document.createElement("script");
+                    script.src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js";
+                    script.onload = () => hljs.highlightBlock(document.querySelector("pre"));
+                    document.head.appendChild(script);
+                </script>'></vega-embed>
+    </section>
+    <script>renderMarked("#demo4", "Example 4", "Adding syntax highlighting when showing Vega source (choose `view Vega` from the control at top right).");</script>
+
+</section>
+</body>
+
+</html>
