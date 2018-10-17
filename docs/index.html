@@ -11,6 +11,12 @@
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@2"></script>
     <script src="../dist/vega-embed.bundled.min.js"></script>
     <script>
+        // if local version is not available, load from cdn
+        if (!VegaElements) {
+            const script = document.createElement("script");
+            script.src = "https://cdn.jsdelivr.net/npm/@polymer-vis/vega-elements/dist/vega-embed.bundled.min.js";
+            document.head.appendChild(script);
+        }
         hljs.initHighlightingOnLoad();
         function decodeHTMLEntities(text) {
             var entities = [
