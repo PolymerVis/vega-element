@@ -218,7 +218,7 @@ render(embedTmpl(scatterplot, {tooltip: true, renderer: "canvas"}), document.bod
 
 
 @element vega-embed
-@demo docs/index.html Examples
+@demo demo/index.html Examples
  */
 export class VegaEmbed extends LitElement {
   /**
