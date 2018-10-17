@@ -12,6 +12,10 @@
     "dist/*",
     "src/*"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/PolymerVis/vega-element.git"
+  },
   "scripts": {
     "prepublishOnly": "npm run build",
     "build": "npm run build:rollup",
