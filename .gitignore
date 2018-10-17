@@ -39,3 +39,12 @@ bower_components
 gh_pages
 tmp
 .publish
+
+# caches
+.rpt2_cache
+
+# compiled js
+dist/
+/vega*.js.map
+/vega*.js
+/vega*.d.ts

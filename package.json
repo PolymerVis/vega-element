@@ -1,17 +1,29 @@
 {
-  "name": "vega-element",
-  "version": "2.0.0",
-  "description": "Polymer 2.0 element for Vega 3 (http://vega.github.io).",
-  "main": ["vega-element.html", "vegalite-element.html"],
+  "name": "@polymer-vis/vega-elements",
+  "version": "3.0.0",
+  "description": "Custom elements to visualize Vega and Vega-Lite views.",
+  "module": "index.js",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "*.js",
+    "*.js.map",
+    "*.d.ts",
+    "dist/*",
+    "src/*"
+  ],
   "scripts": {
-    "lint": "npx eslint *.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build":
-      "npx polymer build && npx jsdoc2md --template README.hbs --files polymer-vis.js > README.md",
-    "precommit": "lint-staged"
+    "prepublishOnly": "npm run build",
+    "build": "npm run build:rollup",
+    "build:tsc": "npx ttsc",
+    "build:rollup": "npm run build:tsc && npx rollup -c && npx rollup -c rollup.config.bundled.js",
+    "test": "echo \"Error: no test specified\" && exit 0"
   },
   "lint-staged": {
-    "*.{js,json,css}": ["prettier --write", "git add"]
+    "*.{js,json,css}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "keywords": [
     "polymer",
@@ -28,17 +40,24 @@
   ],
   "author": "eterna2 <eterna2@hotmail.com>",
   "license": "MIT",
+  "flat": true,
+  "dependencies": {
+    "@polymer/lit-element": "^0.6.1",
+    "vega-embed": "^3.18.2"
+  },
   "devDependencies": {
-    "eslint": "^4.6.1",
-    "eslint-config-google": "^0.7.0",
-    "eslint-config-prettier": "^2.5.0",
-    "eslint-plugin-html": "^3.2.2",
-    "eslint-plugin-prettier": "^2.3.1",
-    "husky": "^0.14.3",
-    "jsdoc": "^3.5.5",
-    "jsdoc-to-markdown": "^3.0.0",
-    "lint-staged": "^4.2.1",
-    "polymer-cli": "^1.5.4",
-    "prettier": "^1.7.0"
+    "@polymer-vis/decorator-transformer": "^3.0.1",
+    "rollup": "^0.66.2",
+    "rollup-plugin-commonjs": "^9.1.8",
+    "rollup-plugin-filesize": "^4.0.1",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-terser": "^3.0.0",
+    "rollup-plugin-typescript2": "^0.17.0",
+    "ttypescript": "^1.5.5",
+    "typescript": "^3.1.1",
+    "vega-typings": "^0.3.47"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

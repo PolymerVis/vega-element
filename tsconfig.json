@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "module": "esnext",
+    "target": "es2015",
+    "lib": ["es2015", "esnext", "dom"],
+    "strict": true,
+    "declaration": true,
+    "sourceMap": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "inlineSources": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "outDir": "./",
+    "plugins": [
+      {
+        "transform": "@polymer-vis/decorator-transformer",
+        "type": "config"
+      }
+    ]
+  },
+  "include": ["src/*.ts"],
+  "exclude": ["ts-transformers/**/*"]
+}
