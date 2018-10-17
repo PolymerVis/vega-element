@@ -12,9 +12,9 @@
     <script src="../dist/vega-embed.bundled.min.js"></script>
     <script>
         // if local version is not available, load from cdn
-        if (!VegaElements) {
+        if (!window.VegaElements) {
             const script = document.createElement("script");
-            script.src = "https://cdn.jsdelivr.net/npm/@polymer-vis/vega-elements/dist/vega-embed.bundled.min.js";
+            script.src = "https://cdn.jsdelivr.net/npm/@polymer-vis/vega-elements@3/dist/vega-embed.bundled.min.js";
             document.head.appendChild(script);
         }
         hljs.initHighlightingOnLoad();
