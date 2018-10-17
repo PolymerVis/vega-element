@@ -7,7 +7,8 @@
 
 `@polymer-vis/vega-elements` is a suite of custom elements to render and interact with `[Vega](https://vega.github.io/vega)` and `[Vega-Lite](https://vega.github.io/vega-lite)` specifications and views.
 
-More API documentation and Demos can be found on [the web components page for vega-element](https://www.webcomponents.org/element/@polymer-vis/vega-elements).
+More API documentation and Demos can be found on [the web components page for vega-elements](https://www.webcomponents.org/element/@polymer-vis/vega-elements).
+More examples can also be found in the [Github page](https://polymervis.github.io/vega-element/).
 
 **Versions details**  
 v3 is a breaking change, where the components are moved to `npm`, and developed in typescript and inherits from `lit-element` instead of `polymer-element`.
