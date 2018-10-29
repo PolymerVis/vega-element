@@ -1,6 +1,6 @@
 {
   "name": "@polymer-vis/vega-elements",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "Custom elements to visualize Vega and Vega-Lite views.",
   "module": "index.js",
   "main": "index.js",
@@ -47,6 +47,7 @@
   "flat": true,
   "dependencies": {
     "@polymer/lit-element": "^0.6.1",
+    "@polymer/polymer": "^3.1.0",
     "vega-embed": "^3.18.2"
   },
   "devDependencies": {

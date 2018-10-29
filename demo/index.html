@@ -128,6 +128,23 @@ ${code}
     </section>
     <script>renderMarked("#demo4", "Example 4", "Adding syntax highlighting when showing Vega source (choose `view Vega` from the control at top right).");</script>
 
+    <section id="demo5">
+        <vega-embed observe-state observe-data="source_0" spec="./spec/scatterplot-vg.json"></vega-embed>
+
+        <script>
+            const ele5 = document.querySelector("#demo5 vega-embed");
+            ele5.addEventListener("data", (e) => {
+                console.log(e.detail)
+            });
+
+            ele5.addEventListener("state", (e) => {
+                console.log(e.detail)
+            });
+        </script>
+    </section>
+    <script>renderMarked("#demo5", "Example 5", "Adding syntax highlighting when showing Vega source (choose `view Vega` from the control at top right).");</script>
+
+
 </section>
 </body>
 
