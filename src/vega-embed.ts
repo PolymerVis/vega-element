@@ -17,6 +17,9 @@ import {
 
 import {html, LitElement, property, PropertyValues} from '@polymer/lit-element';
 
+import {microTask} from '@polymer/polymer/lib/utils/async.js';
+import {Debouncer} from '@polymer/polymer/lib/utils/debounce.js';
+
 // default style for vega-embed
 const embedStyle = `.vega-embed {
   position: relative;
@@ -101,6 +104,9 @@ const I18N = {
   SVG_ACTION: 'Save as SVG'
 };
 
+// tslint:disable-next-line:no-any
+export type SafeAny = any;
+
 /** Cast any value into a boolean if appropriate, else return a string. */
 export function asBoolOrGeneric(value: any) {
   if (typeof value === 'boolean') return value;
@@ -122,6 +128,13 @@ function asObjectOrGeneric(value: any) {
   }
 }
 
+function asArray(value: any): string[] {
+  if (Array.isArray(value)) {
+    return value;
+  }
+  return (value as string).split(/[;, |]/gim).map(str => str.trim());
+}
+
 const IGNORED = new Set([
   'showExport',
   'showSource',
@@ -132,7 +145,12 @@ const IGNORED = new Set([
   'defaultStyle',
   'ele',
   'view',
-  'embedStyle'
+  'embedStyle',
+  'observeState',
+  'observeData',
+  'dataHandler',
+  'dataListeners',
+  'debouncer'
 ]);
 
 /** 
@@ -218,7 +236,7 @@ render(embedTmpl(scatterplot, {tooltip: true, renderer: "canvas"}), document.bod
 
 
 @element vega-embed
-@demo demo/index.html Examples
+@demo index.html Examples
  */
 export class VegaEmbed extends LitElement {
   /**
@@ -313,10 +331,12 @@ export class VegaEmbed extends LitElement {
 
   /**
    * Sets the current log level. See [Vega docs](https://vega.github.io/vega/docs/api/view/#view_logLevel) for details.
+   * (0: None, 1: Error, 2: Warn, 3: Info, 4: Debug)
+   *
    * @type {Number}
    */
   @property({attribute: 'log-level', type: Number})
-  logLevel?: number;
+  logLevel: number = 0;
 
   /**
    * Sets a custom Vega `loader` or `loader` options.
@@ -463,16 +483,69 @@ export class VegaEmbed extends LitElement {
   embedStyle: string = embedStyle;
 
   /**
-   * Promise to current [Vega view](https://github.com/vega/vega-view#vega-view) object.
-   * @type {Promise<View>}
+   * A list of dataset to observe. Will fire event `data` with the arguments
+   * `{name, value}`, where `name` is the name of the observed dataset, and
+   * `value` is the observed dataset.
+   *
+   * Only available for `vega@4`.
+   *
+   * @type {String[]}
    */
-  public view?: Promise<View>;
+  @property({attribute: 'observe-data', type: asArray})
+  observeData?: string[];
+
+  /**
+   * Set `observe-state` flag for the element to dispatch custom event
+   * `state` whenever the view is updated.
+   *
+   * @type {Boolean}
+   */
+  @property({attribute: 'observe-state', type: Boolean})
+  observeState: boolean = false;
+
+  /**
+   * Promise to current [Vega view](https://github.com/vega/vega-view#vega-view) object.
+   * @type {View}
+   */
+  public view?: View;
+
+  /**
+   * The current state of signals and data sets in this view’s backing dataflow graph. Available only if `observe-state` attribute is set.
+   *
+   * @type {data: Object, signals: Object}
+   */
+  public state?: any;
 
   /**
    * HTMLElement containing the embedded view.
    * @type {HTMLElement}
    */
   public ele?: HTMLElement;
+
+  /**
+   * List of dataset that has a listener.
+   *
+   * @type String[]
+   */
+  protected dataListeners: string[] = [];
+
+  /**
+   * Debouncer
+   */
+  protected debouncer: Debouncer | null = null;
+
+  /**
+   * Fired when `observe-data` is set.
+   *
+   * @event data
+   * @param {{name: String, value: Array}} dataset.
+   */
+  /**
+   * Default dataHandler.
+   */
+  protected dataHandler = (name: string, value: any) => {
+    this.dispatchEvent(new CustomEvent('data', {detail: {name, value}}));
+  };
 
   static get properties() {
     return {};
@@ -505,6 +578,48 @@ export class VegaEmbed extends LitElement {
       opts[key] = (this as any)[key];
     }
     this.opts = opts;
+
+    this.debouncer = Debouncer.debounce(
+      this.debouncer,
+      microTask,
+      this.updateEmbed.bind(this)
+    );
+  }
+
+  protected finalizeView(view: View) {
+    this.unregisterDataListeners(view);
+    view.finalize();
+  }
+
+  /**
+   * Fired when the view is updated.
+   *
+   * @event view
+   * @param {View} Vega view object.
+   */
+  /**
+   * Update the view and register data and register data listeners.
+   * @param {View} Vega view object.
+   */
+  protected updateView(view: View) {
+    this.updateState(view);
+    this.registerDataListeners(view);
+    // dispatch event
+    this.dispatchEvent(new CustomEvent('view', {detail: view}));
+  }
+
+  protected async updateEmbed() {
+    const {spec, opts} = this;
+
+    // do nothing if no spec is provided
+    if (!spec) return;
+
+    // clean up old view
+    this.view && this.finalizeView(this.view);
+
+    // update view
+    this.view = await this.getView(spec, opts);
+    this.view && this.updateView(this.view);
   }
 
   /**
@@ -513,28 +628,44 @@ export class VegaEmbed extends LitElement {
    * @event error
    * @param {Error} error object from Vega.
    */
-  /**
-   * Updates the vega-embed object.
-   */
-  protected updateEmbed() {
-    const {spec, opts} = this;
-
-    // do nothing if no spec is provided
-    if (!spec) return;
-
+  protected async getView(spec: string | VgSpec, opts: EmbedOptions) {
     // update
-    vegaEmbed(this.ele as HTMLElement, spec, opts)
-      .then(result => {
-        this.height = result.view.height();
-        this.width = result.view.width();
-      })
-      .catch(error =>
-        this.dispatchEvent(new CustomEvent('error', {detail: error}))
-      );
+    try {
+      const result = await vegaEmbed(this.ele as HTMLElement, spec, opts);
+      return result.view;
+    } catch (error) {
+      this.dispatchEvent(new CustomEvent('error', {detail: error}));
+      return undefined;
+    }
   }
 
-  protected updated() {
-    this.updateEmbed();
+  protected unregisterDataListeners(view: View) {
+    // unregister old data listeners
+    this.dataListeners.forEach(name => {
+      try {
+        (view as any).removeDataListener(name, this.dataHandler);
+      } catch (error) {
+        this.dispatchEvent(new CustomEvent('error', {detail: error}));
+      }
+    });
+  }
+
+  protected registerDataListeners(view: View) {
+    if (!this.observeData) return;
+    this.dataListeners = this.observeData.map(name => {
+      try {
+        (view as any).addDataListener(name, this.dataHandler);
+      } catch (error) {
+        this.dispatchEvent(new CustomEvent('error', {detail: error}));
+      }
+      return name;
+    });
+  }
+
+  protected updateState(view: View) {
+    if (!this.observeState) return;
+    this.state = view.getState();
+    this.dispatchEvent(new CustomEvent('state', {detail: this.state}));
   }
 
   protected render() {

@@ -48,3 +48,5 @@ dist/
 /vega*.js.map
 /vega*.js
 /vega*.d.ts
+/index.js
+/index.js.map
