@@ -3,6 +3,7 @@
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/@polymer-vis/vega-elements)
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![Typescript](https://img.shields.io/badge/typescript-3.1-ff69b4.svg)](https://github.com/Microsoft/TypeScript)
+[![dependencies Status](https://david-dm.org/polymervis/vega-element/status.svg)](https://david-dm.org/polymervis/vega-element)
 ==========
 
 `@polymer-vis/vega-elements` is a suite of custom elements to render and interact with `[Vega](https://vega.github.io/vega)` and `[Vega-Lite](https://vega.github.io/vega-lite)` specifications and views.
